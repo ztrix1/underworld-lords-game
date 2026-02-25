@@ -24,3 +24,12 @@ module.exports = app;
 
 const errorHandler = require("./middlewares/error.middleware");
 app.use(errorHandler);
+
+// Auth routes
+app.use('/api/auth', require('./routes/auth'));
+
+// Protected routes (تتطلب مصادقة)
+const auth = require('./middlewares/auth');
+app.use('/api/protected', auth, (req, res) => {
+  res.json({ message: 'You accessed a protected route!', userId: req.userId });
+});

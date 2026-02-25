@@ -1,0 +1,15 @@
+=== UNDERWORLD LORDS COMMANDS ===
+
+Start Server:
+cd /workspaces/underworld-lords-game/server && npm run dev
+
+Start Client:
+cd /workspaces/underworld-lords-game/client && python3 -m http.server 8080
+
+Test API:
+curl http://localhost:3000/api/health
+
+Public URL:
+https://glorious-eureka-v645pqx5q5vxhp646-8080.app.github.dev
+
+Created: $(date)
