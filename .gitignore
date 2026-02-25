@@ -1,0 +1,8 @@
+node_modules/
+.env
+*.log
+client/assets/
+docs/
+scripts/cron/
+server/utils/
+tests/
