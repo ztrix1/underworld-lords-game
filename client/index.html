@@ -13,14 +13,14 @@
         <nav class="main-nav">
             <div class="logo">Underworld Lords</div>
             <div class="nav-links">
-                <a href="#home">Home</a>
-                <a href="#game">Play</a>
-                <a href="#leaderboard">Leaderboard</a>
-                <a href="#profile">Profile</a>
+                <a href="#home" onclick="showSection('home')">Home</a>
+                <a href="#game" onclick="showSection('game')">Play</a>
+                <a href="#leaderboard" onclick="showSection('leaderboard')">Leaderboard</a>
+                <a href="#profile" onclick="showSection('profile')">Profile</a>
             </div>
             <div class="auth-buttons">
-                <button onclick="showLogin()" class="btn-login">Login</button>
-                <button onclick="showRegister()" class="btn-register">Register</button>
+                <button onclick="showModal('login')" class="btn-login">Login</button>
+                <button onclick="showModal('register')" class="btn-register">Register</button>
             </div>
             <div class="user-menu" style="display: none;">
                 <span class="username"></span>
@@ -33,14 +33,13 @@
             </div>
         </nav>
 
-        <!-- Main Content -->
-        <main id="main-content">
+        <!-- Sections -->
+        <div id="home-section" class="section active">
             <div class="hero-section">
                 <h1>Welcome to Underworld Lords</h1>
                 <p>Build your empire, command your army, rule the underworld</p>
-                <button onclick="showRegister()" class="btn-play">Start Playing</button>
+                <button onclick="showModal('register')" class="btn-play">Start Playing</button>
             </div>
-
             <div class="features">
                 <div class="feature-card">
                     <h3>Build Your Empire</h3>
@@ -55,25 +54,51 @@
                     <p>Fight against players from around the world</p>
                 </div>
             </div>
-        </main>
+        </div>
 
-        <!-- Auth Modals -->
+        <div id="game-section" class="section">
+            <h2>Game Lobby</h2>
+            <p>Coming soon...</p>
+        </div>
+
+        <div id="leaderboard-section" class="section">
+            <h2>Leaderboard</h2>
+            <p>Coming soon...</p>
+        </div>
+
+        <div id="profile-section" class="section">
+            <h2>Player Profile</h2>
+            <div class="profile-card">
+                <div class="profile-header">
+                    <img src="https://via.placeholder.com/100" alt="Avatar">
+                    <h3 class="profile-name">Player Name</h3>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat">Level: <span class="stat-value">1</span></div>
+                    <div class="stat">Experience: <span class="stat-value">0/1000</span></div>
+                    <div class="stat">Wins: <span class="stat-value">0</span></div>
+                    <div class="stat">Losses: <span class="stat-value">0</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modals -->
         <div id="login-modal" class="modal">
             <div class="modal-content">
-                <span class="close">&times;</span>
+                <span class="close" onclick="closeModal('login')">&times;</span>
                 <h2>Login</h2>
                 <form id="login-form">
                     <input type="email" id="login-email" placeholder="Email" required>
                     <input type="password" id="login-password" placeholder="Password" required>
                     <button type="submit">Login</button>
                 </form>
-                <p>Don't have an account? <a href="#" onclick="switchToRegister()">Register</a></p>
+                <p>Don't have an account? <a href="#" onclick="switchModal('register')">Register</a></p>
             </div>
         </div>
 
         <div id="register-modal" class="modal">
             <div class="modal-content">
-                <span class="close">&times;</span>
+                <span class="close" onclick="closeModal('register')">&times;</span>
                 <h2>Register</h2>
                 <form id="register-form">
                     <input type="text" id="register-username" placeholder="Username" required>
@@ -81,7 +106,7 @@
                     <input type="password" id="register-password" placeholder="Password" required>
                     <button type="submit">Register</button>
                 </form>
-                <p>Already have an account? <a href="#" onclick="switchToLogin()">Login</a></p>
+                <p>Already have an account? <a href="#" onclick="switchModal('login')">Login</a></p>
             </div>
         </div>
     </div>
