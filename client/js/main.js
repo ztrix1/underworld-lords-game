@@ -10,10 +10,10 @@
 
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:3000/api'
-    : 'https://underworld-lords-server.onrender.com/api'; // غيّر هذا للرابط الفعلي بعد نشر السيرفر
+    : 'https://underworld-lords-server.onrender.com/api'; // استبدل هذا بالرابط الفعلي بعد نشر السيرفر
 
 // ----------------------------------------------------------------------
-// 2. DOM ELEMENTS CACHING (اختياري لتحسين الأداء)
+// 2. DOM ELEMENTS CACHING
 // ----------------------------------------------------------------------
 const authButtons = document.querySelector('.auth-buttons');
 const userMenu = document.querySelector('.user-menu');
@@ -103,7 +103,6 @@ async function checkAuth() {
     const token = localStorage.getItem('token');
 
     if (!token) {
-        // إخفاء القائمة الخاصة بالمستخدم وإظهار أزرار الدخول
         if (authButtons) authButtons.style.display = 'flex';
         if (userMenu) userMenu.style.display = 'none';
         return;
@@ -121,7 +120,6 @@ async function checkAuth() {
         const user = await response.json();
         localStorage.setItem('username', user.username);
 
-        // تحديث الواجهة ببيانات المستخدم
         if (authButtons) authButtons.style.display = 'none';
         if (userMenu) userMenu.style.display = 'flex';
         if (usernameSpan) usernameSpan.textContent = user.username;
@@ -248,11 +246,10 @@ function logout() {
 }
 
 // ----------------------------------------------------------------------
-// 9. EXPOSE FUNCTIONS TO GLOBAL SCOPE (للوصول من HTML)
+// 9. EXPOSE FUNCTIONS TO GLOBAL SCOPE
 // ----------------------------------------------------------------------
-// هذه الدوال تستخدم في الأزرار الموجودة في index.html
 window.showModal = showModal;
 window.closeModal = closeModal;
 window.switchModal = switchModal;
 window.logout = logout;
-window.showSection = showSection; // اختياري، لكن قد تحتاجه في HTML
+window.showSection = showSection;
