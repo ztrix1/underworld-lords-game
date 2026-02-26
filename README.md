@@ -39,4 +39,8 @@ Underworld Lords is a turn-based strategy game where players build criminal orga
 1. **Clone the repository**
    ```bash
    git clone https://github.com/ztrix1/underworld-lords-game.git
+<<<<<<< HEAD
    cd underworld-lords-game
+=======
+   cd underworld-lords-game
+>>>>>>> 6197e4c78d509fa606d3d71261ba957db9639ef0
