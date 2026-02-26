@@ -1,29 +1,21 @@
-const API_URL = 'http://localhost:3000/api';
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3000/api'
+    : 'https://underworld-lords-server.onrender.com/api'; // غيّر هذا للرابط الفعلي بعد نشر السيرفر
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Show home section by default
     showSection('home');
-    
-    // Check login status
     checkAuth();
-    
-    // Setup forms
     setupForms();
 });
 
 function showSection(sectionId) {
-    // Hide all sections
     document.querySelectorAll('.section').forEach(section => {
         section.classList.remove('active');
     });
-    
-    // Show selected section
     const selectedSection = document.getElementById(`${sectionId}-section`);
     if (selectedSection) {
         selectedSection.classList.add('active');
     }
-    
-    // Update URL hash
     window.location.hash = sectionId;
 }
 
@@ -40,18 +32,39 @@ function switchModal(type) {
     showModal(type);
 }
 
-function checkAuth() {
+async function checkAuth() {
     const token = localStorage.getItem('token');
     const authButtons = document.querySelector('.auth-buttons');
     const userMenu = document.querySelector('.user-menu');
     const usernameSpan = document.querySelector('.username');
-    
-    if (token && authButtons && userMenu) {
+    const profileName = document.querySelector('.profile-name');
+    const levelSpan = document.querySelector('.level');
+    const coinsSpan = document.querySelector('.coins');
+
+    if (!token) {
+        authButtons.style.display = 'flex';
+        userMenu.style.display = 'none';
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/auth/me`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error('Not authenticated');
+        
+        const user = await response.json();
+        localStorage.setItem('username', user.username);
+        
         authButtons.style.display = 'none';
         userMenu.style.display = 'flex';
-        if (usernameSpan) {
-            usernameSpan.textContent = localStorage.getItem('username') || 'Player';
-        }
+        if (usernameSpan) usernameSpan.textContent = user.username;
+        if (profileName) profileName.textContent = user.username;
+        if (levelSpan) levelSpan.textContent = `Lv. ${user.profile?.level || 1}`;
+        if (coinsSpan) coinsSpan.innerHTML = `💰 ${user.profile?.coins || 1000}`;
+    } catch (error) {
+        console.error('Auth check failed:', error);
+        logout();
     }
 }
 
@@ -63,16 +76,26 @@ function setupForms() {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
-            
-            // For now, just simulate login
-            localStorage.setItem('token', 'dummy-token');
-            localStorage.setItem('username', email.split('@')[0]);
-            closeModal('login');
-            checkAuth();
-            alert('Logged in successfully!');
+
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Login failed');
+
+                localStorage.setItem('token', data.token);
+                closeModal('login');
+                await checkAuth();
+                alert('Login successful!');
+            } catch (error) {
+                alert(error.message);
+            }
         });
     }
-    
+
     // Register form
     const registerForm = document.getElementById('register-form');
     if (registerForm) {
@@ -81,26 +104,22 @@ function setupForms() {
             const username = document.getElementById('register-username').value;
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
-            
+
             try {
-                const response = await fetch(`${API_URL}/users`, {
+                const response = await fetch(`${API_URL}/auth/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, email, password })
                 });
-                
-                if (response.ok) {
-                    localStorage.setItem('token', 'dummy-token');
-                    localStorage.setItem('username', username);
-                    closeModal('register');
-                    checkAuth();
-                    alert('Registration successful!');
-                } else {
-                    alert('Registration failed');
-                }
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Registration failed');
+
+                localStorage.setItem('token', data.token);
+                closeModal('register');
+                await checkAuth();
+                alert('Registration successful!');
             } catch (error) {
-                console.error('Error:', error);
-                alert('Server error');
+                alert(error.message);
             }
         });
     }
@@ -112,7 +131,7 @@ function logout() {
     document.querySelector('.auth-buttons').style.display = 'flex';
     document.querySelector('.user-menu').style.display = 'none';
     showSection('home');
-    alert('Logged out successfully');
+    alert('Logged out');
 }
 
 // Handle hash change
